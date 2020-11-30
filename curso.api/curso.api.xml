@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>curso.api</name>
+    </assembly>
+    <members>
+        <member name="M:curso.api.Controllers.UsuarioController.Logar(curso.api.Models.Usuarios.LoginViewModelInput)">
+            <summary>
+            Este serviço permite autenticar um usuário cadastrado e ativo.
+            </summary>
+            <param name="LoginViewModelInput"></param>
+            <returns>Retorna o status OK e o token de acesso em caso de sucesso.</returns>
+        </member>
+        <member name="M:curso.api.Controllers.UsuarioController.Registrar(curso.api.Models.Usuarios.RegistroViewModelInput)">
+            <summary>
+            Este serviço permite cadastrar um usuário com e-mail, login e senha.
+            </summary>
+            <param name="RegistroViewModelInput"></param>
+            <returns>Retorna o status OK e o token de acesso em caso de sucesso.</returns>
+        </member>
+        <member name="T:curso.api.Models.Usuarios.LoginViewModelInput">
+            <summary>
+            Este serviço permite autenticar um usuário cadastrado e ativo.
+            </summary>
+            <param name="LoginViewModelInput"></param>
+            <returns>Retorna o status OK e o token de acesso em caso de sucesso.</returns>
+        </member>
+        <member name="T:curso.api.Models.Usuarios.RegistroViewModelInput">
+            <summary>
+            Este serviço permite cadastrar um usuário com e-mail, login e senha.
+            </summary>
+            <param name="RegistroViewModelInput"></param>
+            <returns>Retorna o status OK e o cadastro do usuário em caso de sucesso.</returns>
+        </member>
+    </members>
+</doc>
