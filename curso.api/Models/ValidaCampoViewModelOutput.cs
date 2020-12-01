@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace curso.api.Controllers
+namespace curso.api.Models
 {
     public class ValidaCampoViewModelOutput
     {
