@@ -3,10 +3,14 @@ using curso.api.Models;
 using curso.api.Models.Usuarios;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using Swashbuckle.AspNetCore.Annotations;
 using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Security.Claims;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace curso.api.Controllers
@@ -31,7 +35,44 @@ namespace curso.api.Controllers
         public IActionResult Logar(LoginViewModelInput loginViewModelInput)
         {
 
-            return Ok(loginViewModelInput);
+            // manual user creation only for tests, remove after creating DB connection
+            var usuarioViewModelOutput = new UsuarioViewModelOutput()
+            {
+
+                Codigo = 1,
+                Login = "GustavoCSilva",
+                Email = "gustavo@teste.com"
+            
+            };
+
+            var secret = Encoding.ASCII.GetBytes("@_S3cReT_T0kEn_@");
+            var symmetricSecurityKey = new SymmetricSecurityKey(secret);
+
+            // configuration of the descriptor of the token data received
+            var securityTokenDescriptor = new SecurityTokenDescriptor
+            {
+
+                Subject = new ClaimsIdentity(new Claim[]
+                {
+                    new Claim(ClaimTypes.NameIdentifier, usuarioViewModelOutput.Codigo.ToString()),
+                    new Claim(ClaimTypes.Name, usuarioViewModelOutput.Login.ToString()),
+                    new Claim(ClaimTypes.Email, usuarioViewModelOutput.Email.ToString())
+                }),
+
+                Expires = DateTime.UtcNow.AddDays(1),
+                SigningCredentials = new SigningCredentials(symmetricSecurityKey, SecurityAlgorithms.HmacSha256Signature)
+            };
+
+            // token generation using the descriptor definition
+            var jwtSecurityTokenHandler = new JwtSecurityTokenHandler();
+            var tokenGenerated = jwtSecurityTokenHandler.CreateToken(securityTokenDescriptor);
+            var token = jwtSecurityTokenHandler.WriteToken(tokenGenerated);
+
+            return Ok(new 
+            { 
+                Token = token, 
+                Usuario = usuarioViewModelOutput 
+            });
 
         }
 
