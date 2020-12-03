@@ -1,8 +1,12 @@
-﻿using curso.api.Filters;
+﻿using curso.api.Business.Entities;
+using curso.api.Config;
+using curso.api.Filters;
+using curso.api.Infra.Data;
 using curso.api.Models;
 using curso.api.Models.Usuarios;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Swashbuckle.AspNetCore.Annotations;
 using System;
@@ -91,6 +95,27 @@ namespace curso.api.Controllers
         [ValidacaoModelStateCustomizado]
         public IActionResult Registrar(RegistroViewModelInput registroViewModelInput)
         {
+
+            var optionsBuilder = new DbContextOptionsBuilder<CursoDbContext>();
+
+            optionsBuilder.UseSqlServer(connectionString: @"Server=(localdb)\mssqllocaldb;Database=CURSO;Integrated Security=True");
+
+            CursoDbContext contexto = new CursoDbContext(optionsBuilder.Options);
+
+            // check for database updates on entity migrations
+            var migracoesPendentes = contexto.Database.GetPendingMigrations();
+
+            if (migracoesPendentes.Count() > 0)
+            {
+                contexto.Database.Migrate();
+            }
+
+            var usuario = new Usuario();
+            usuario.Email = registroViewModelInput.Email;
+            usuario.Login = registroViewModelInput.Login;
+            usuario.Senha = registroViewModelInput.Senha;
+            contexto.Usuario.Add(usuario);
+            contexto.SaveChanges();
 
             return Created("", registroViewModelInput);
 
